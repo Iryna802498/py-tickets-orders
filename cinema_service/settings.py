@@ -124,7 +124,7 @@ TIME_ZONE = "UTC"
 
 USE_I18N = True
 
-USE_TZ = True
+USE_TZ = False
 
 
 # Static files (CSS, JavaScript, Images)
@@ -141,5 +141,5 @@ REST_FRAMEWORK = {
     "DEFAULT_PAGINATION_CLASS": (
         "rest_framework.pagination.LimitOffsetPagination"
     ),
-    "PAGE_SIZE": 2
+    "PAGE_SIZE": 5
 }

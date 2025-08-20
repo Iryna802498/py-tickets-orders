@@ -1,5 +1,5 @@
 from django.db.models import Count, F
-from rest_framework import viewsets
+from rest_framework import viewsets, serializers
 
 from cinema.models import (
     Genre,
@@ -7,7 +7,8 @@ from cinema.models import (
     CinemaHall,
     Movie,
     MovieSession,
-    Order
+    Order,
+    Ticket
 )
 from datetime import datetime
 
@@ -101,7 +102,7 @@ class MovieSessionViewSet(viewsets.ModelViewSet):
                 .select_related("movie", "cinema_hall")
                 .annotate(tickets_available=F("cinema_hall__rows")
                           * F("cinema_hall__seats_in_row")
-                          - Count("tickets"))
+                          - Count("tickets", distinct=True))
             )
         elif self.action == "retrieve":
             queryset = queryset.select_related("movie", "cinema_hall")
@@ -123,7 +124,7 @@ class OrderViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         queryset = self.queryset.filter(user=self.request.user)
-        if self.action == "list":
+        if getattr(self, "action", None):
             queryset = queryset.prefetch_related(
                 "tickets__movie_session__cinema_hall"
             )
