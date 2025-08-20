@@ -122,6 +122,14 @@ class TicketSerializer(serializers.ModelSerializer):
             attrs["movie_session"].cinema_hall,
             serializers.ValidationError
         )
+        if Ticket.objects.filter(
+            movie_session=movie_session,
+            row=row,
+            seat=seat
+        ).exists():
+            raise serializers.ValidationError(
+                {"non_field_errors": ["This seat is already taken for the selected session."]}
+            )
         return data
 
 
