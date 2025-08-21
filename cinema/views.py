@@ -119,7 +119,7 @@ class MovieSessionViewSet(viewsets.ModelViewSet):
 
 
 class OrderPagination(PageNumberPagination):
-    page_size = 10
+    page_size = 2
     page_size_query_param = "page_size"
     max_page_size = 100
 
@@ -133,6 +133,8 @@ class OrderViewSet(viewsets.ModelViewSet):
         queryset = super().get_queryset().filter(user=self.request.user)
         if getattr(self, "action", None):
             queryset = queryset.prefetch_related(
+                "tickets",
+                "tickets__movie_session__movie",
                 "tickets__movie_session__cinema_hall"
             )
         return queryset
