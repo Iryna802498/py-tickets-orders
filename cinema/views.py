@@ -93,7 +93,7 @@ class MovieSessionViewSet(viewsets.ModelViewSet):
         if date:
             date_obj = datetime.strptime(date, "%Y-%m-%d").date()
             queryset = queryset.filter(show_time__date=date_obj)
-        elif movie:
+        if movie:
             movie_ids = [int(pk) for pk in movie.split(",")]
             queryset = queryset.filter(movie__id__in=movie_ids)
         if self.action == "list":
