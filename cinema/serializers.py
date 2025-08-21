@@ -115,21 +115,20 @@ class TicketSerializer(serializers.ModelSerializer):
         )
 
     def validate(self, attrs):
+        seat = attrs["seat"]
+        row = attrs["row"]
+        movie_session = attrs["movie_session"]
         data = super().validate(attrs)
         Ticket.validate_seats_rows(
-            attrs["seat"],
-            attrs["row"],
-            attrs["movie_session"].cinema_hall,
+            seat,
+            row,
+            movie_session.cinema_hall,
             serializers.ValidationError
         )
         if Ticket.objects.filter(
-            movie_session=movie_session,
-            row=row,
-            seat=seat
+            movie_session=movie_session, row=row, seat=seat
         ).exists():
-            raise serializers.ValidationError(
-                {"non_field_errors": ["This seat is already taken for the selected session."]}
-            )
+            raise serializers.ValidationError("This seat is already taken.")
         return data
 
 
